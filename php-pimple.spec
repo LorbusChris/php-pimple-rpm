@@ -47,8 +47,6 @@ URL:           http://pimple.sensiolabs.org
 Source0:       https://github.com/%{github_owner}/%{github_name}/archive/%{github_commit}/%{name}-%{github_version}-%{github_commit}.tar.gz
 
 BuildRequires: php-devel >= %{php_min_ver}
-# For autoload generation
-BuildRequires: %{_bindir}/phpab
 %if %{with_tests}
 # For tests
 ## composer.json
