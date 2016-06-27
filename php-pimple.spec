@@ -14,10 +14,18 @@
 %global github_version   3.0.2
 %global github_commit    a30f7d6e57565a2e1a316e1baf2a483f788b258a
 
+%if "%{php_version}" < "7"
+%global with_ext 1
+%else
+%global with_ext 0
+BuildArch: noarch
+%endif
+
 # Lib
 %global composer_vendor  pimple
 %global composer_project pimple
 
+%if %{with_ext}
 # Ext
 %global ext_name pimple
 %global with_zts 0%{?__ztsphp:1}
@@ -25,6 +33,7 @@
 %global ini_name %{ext_name}.ini
 %else
 %global ini_name 40-%{ext_name}.ini
+%endif
 %endif
 
 # "php": ">=5.3.0"
@@ -38,7 +47,7 @@
 
 Name:          php-%{composer_project}
 Version:       %{github_version}
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       A simple dependency injection container for PHP (extension)
 
 Group:         Development/Libraries
@@ -56,8 +65,10 @@ BuildRequires: php-reflection
 BuildRequires: php-spl
 %endif
 
+%if %{with_ext}
 Requires:      php(zend-abi) = %{php_zend_api}
 Requires:      php(api)      = %{php_core_api}
+%endif
 
 %if 0%{?fedora} < 20 && 0%{?rhel} < 7
 # Filter shared private
@@ -125,6 +136,7 @@ $fedoraClassLoader->addPrefix('Pimple\\', dirname(__DIR__));
 return $fedoraClassLoader;
 AUTOLOAD
 
+%if %{with_ext}
 : Extension: NTS
 mv ext/%{ext_name} ext/NTS
 %if %{with_zts}
@@ -137,9 +149,11 @@ cat << 'INI' | tee %{ini_name}
 ; Enable %{ext_name} extension
 extension=%{ext_name}.so
 INI
+%endif
 
 
 %build
+%if %{with_ext}
 : Extension: NTS
 pushd ext/NTS
     %{_bindir}/phpize
@@ -154,6 +168,7 @@ pushd ext/ZTS
     make %{?_smp_mflags}
 popd
 %endif
+%endif
 
 
 %install
@@ -161,6 +176,7 @@ popd
 mkdir -p %{buildroot}/%{phpdir}/
 cp -rp src/* %{buildroot}/%{phpdir}/
 
+%if %{with_ext}
 : Extension: NTS
 make -C ext/NTS install INSTALL_ROOT=%{buildroot}
 install -D -m 0644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
@@ -169,9 +185,11 @@ install -D -m 0644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 make -C ext/ZTS install INSTALL_ROOT=%{buildroot}
 install -D -m 0644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
 %endif
+%endif
 
 
 %check
+%if %{with_ext}
 : Extension: NTS minimal load test
 %{__php} --no-php-ini \
     --define extension=ext/NTS/modules/%{ext_name}.so \
@@ -183,12 +201,14 @@ install -D -m 0644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
     --define extension=ext/ZTS/modules/%{ext_name}.so \
     --modules | grep %{ext_name}
 %endif
+%endif
 
 %if %{with_tests}
 : Library: Test suite without extension
 %{_bindir}/phpunit --verbose \
     --bootstrap %{buildroot}/%{phpdir}/Pimple/autoload.php
 
+%if %{with_ext}
 : Library: Test suite with extension
 %{_bindir}/php --define extension=ext/NTS/modules/%{ext_name}.so \
     %{_bindir}/phpunit --verbose \
@@ -205,6 +225,7 @@ pushd ext/ZTS
     make test NO_INTERACTION=1 REPORT_EXIT_STATUS=1
 popd
 %endif
+%endif
 %else
 : Tests skipped
 %endif
@@ -216,6 +237,7 @@ popd
 %license LICENSE
 %doc CHANGELOG
 %doc README.rst
+%if %{with_ext}
 # NTS
 %config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/%{ext_name}.so
@@ -223,6 +245,7 @@ popd
 %if %{with_zts}
 %config(noreplace) %{php_ztsinidir}/%{ini_name}
 %{php_ztsextdir}/%{ext_name}.so
+%endif
 %endif
 
 %files lib
@@ -235,6 +258,9 @@ popd
 
 
 %changelog
+* Mon Jun 27 2016 Remi Collet <remi@fedoraproject.org> - 3.0.2-3
+- disable the extension with PHP 7
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
