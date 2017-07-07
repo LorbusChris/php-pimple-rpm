@@ -47,7 +47,7 @@ BuildArch: noarch
 
 Name:          php-%{composer_project}
 Version:       %{github_version}
-Release:       4%{?dist}
+Release:       5%{?dist}
 Summary:       A simple dependency injection container for PHP (extension)
 
 Group:         Development/Libraries
@@ -258,6 +258,9 @@ popd
 
 
 %changelog
+* Fri Jul 07 2017 Igor Gnatenko <ignatenko@redhat.com> - 3.0.2-5
+- Rebuild due to bug in RPM (RHBZ #1468476)
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
