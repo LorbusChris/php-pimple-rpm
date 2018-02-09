@@ -1,7 +1,8 @@
 #
 # Fedora spec file for php-pimple
 #
-# Copyright (c) 2015-2017 Shawn Iwinski <shawn.iwinski@gmail.com>
+# Copyright (c) 2015-2018 Shawn Iwinski <shawn.iwinski@gmail.com>
+#                         Christian Glombek <christian.glombek@rwth-aachen.de>
 #
 # License: MIT
 # http://opensource.org/licenses/MIT
@@ -11,8 +12,8 @@
 
 %global github_owner     silexphp
 %global github_name      Pimple
-%global github_version   3.2.2
-%global github_commit    4d45fb62d96418396ec58ba76e6f065bca16e10a
+%global github_version   3.2.3
+%global github_commit    9e403941ef9d65d20cba7d54e29fe906db42cf32
 
 %global composer_vendor  pimple
 %global composer_project pimple
@@ -132,6 +133,9 @@ exit $RETURN_CODE
 
 
 %changelog
+* Fri Feb 09 2018 Christian Glombek <christian.glombek@rwth-aachen.de> - 3.2.3-1
+- Update to 3.2.3
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
