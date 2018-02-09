@@ -30,7 +30,7 @@
 
 Name:          php-%{composer_project}
 Version:       %{github_version}
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       A simple dependency injection container for PHP
 
 Group:         Development/Libraries
@@ -132,6 +132,9 @@ exit $RETURN_CODE
 
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Sat Aug 05 2017 Shawn Iwinski <shawn.iwinski@gmail.com> - 3.2.2-1
 - Update to 3.2.2 (RHBZ #1467881)
 - Drop extension completely
